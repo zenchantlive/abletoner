@@ -7,6 +7,11 @@
   resolved "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
+"@fontsource/space-grotesk@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/@fontsource/space-grotesk/-/space-grotesk-5.0.1.tgz"
+  integrity sha512-izq3qWqQU+aBlBBxXNL9/0lVFxXtXs6MEUvV+qZN5nkOJZ8QgE5fut1kBhI89ZnrHzCH2iIZ4zcgbONnFiOz7A==
+
 "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
   resolved "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.3.tgz"
