@@ -7,6 +7,7 @@ import BackgroundGradient from "../components/background-gradient";
 import Card from "../components/card";
 import { MouseEvent, useCallback, useRef, useState } from "react";
 import client from "../config-client";
+import { googleLogout } from '@react-oauth/google';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -17,6 +18,7 @@ const Home: NextPage = () => {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<string | undefined>(undefined);
   const [receiving, setReceiving] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // set this to true after successful login
 
   const start = useCallback(async () => {
     setResult("");
@@ -34,12 +36,14 @@ const Home: NextPage = () => {
 
     if (!response.ok) {
       setReceiving(false);
+      console.error("Error in request");
       return;
     }
 
     const data = response.body;
 
     if (!data) {
+      console.error("No data received");
       return;
     }
 
@@ -57,6 +61,15 @@ const Home: NextPage = () => {
 
     setReceiving(false);
   }, [input]);
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    googleLogout();
+  };
+
+  if (!isLoggedIn) {
+    return <div>Please login to continue</div>;
+  }
 
   return (
     <div className="relative flex min-h-screen overflow-hidden isolate flex-col items-center justify-start py-2 bg-gray-100 text-black dark:bg-neutral-900 dark:text-gray-100">
@@ -125,10 +138,25 @@ const Home: NextPage = () => {
             <pre className="p-4 whitespace-pre-wrap">{result}</pre>
           </Card>
         ) : undefined}
+
+        <button onClick={logout}>Logout</button>
       </main>
 
       <footer className="flex h-24 w-full items-center justify-center">
-      
+        <button
+          className={classNames(
+            spaceGrotesk.className,
+            "mt-5 mr-5 text-white rounded-xl px-5 py-2 text-xl font-bold hover:opacity-70 transition-all duration-300"
+          )}
+          style={{ background: client.appThemeColor }}
+          onClick={() => window.open('https://www.buymeacoffee.com/zenchant', '_blank')}
+        >
+          Buy me a 🥑?
+        </button>
+
+        <div className="mt-5 mr-5 text-xs bg-black bg-opacity-50 text-white p-2 rounded">
+          🥑  🥑  If you find yourself learning, consider supporting me or checking out my art! 🥑  🥑
+        </div>
       </footer>
     </div>
   );
