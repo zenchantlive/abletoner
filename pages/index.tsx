@@ -6,22 +6,19 @@ import BackgroundGradient from "../components/background-gradient";
 import Card from "../components/card";
 import client from "../config-client";
 import classNames from "classnames";
-import "@fontsource/space-grotesk/400.css"; // Specify weight
 
 const Home: NextPage = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [input, setInput] = useState("");
   const [result, setResult] = useState<string | undefined>(undefined);
   const [receiving, setReceiving] = useState(false);
-  
-  const spaceGroteskClass = spaceGrotesk({
-    subsets: ["latin"],
-    variable: "--font-space-grotesk",
-  });
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [user, setUser] = useState<any | null>(null);
 
   const login = useGoogleLogin({
     onSuccess: tokenResponse => {
       console.log(tokenResponse);
+      setUser(tokenResponse);
       setIsSignedIn(true);
     },
   });
@@ -29,6 +26,7 @@ const Home: NextPage = () => {
   useGoogleOneTapLogin({
     onSuccess: credentialResponse => {
       console.log(credentialResponse);
+      setUser(credentialResponse);
       setIsSignedIn(true);
     },
     onError: () => {
@@ -39,6 +37,7 @@ const Home: NextPage = () => {
   const start = useCallback(async () => {
     setResult("");
     setReceiving(true);
+    setErrorMsg(null);
 
     const response = await fetch("/api/request", {
       method: "POST",
@@ -52,14 +51,14 @@ const Home: NextPage = () => {
 
     if (!response.ok) {
       setReceiving(false);
-      console.error("Error in request");
+      setErrorMsg("Error in request");
       return;
     }
 
     const data = await response.json();
 
     if (!data) {
-      console.error("No data received");
+      setErrorMsg("No data received");
       return;
     }
 
@@ -80,15 +79,14 @@ const Home: NextPage = () => {
 
   const logout = () => {
     setIsSignedIn(false);
+    setUser(null);
     googleLogout();
   };
-
-
   if (!isSignedIn) {
     return <div>Please login to continue</div>;
-  }
+}
 
-  return (
+return (
     <div className="relative flex min-h-screen overflow-hidden isolate flex-col items-center justify-start py-2 bg-gray-100 text-black dark:bg-neutral-900 dark:text-gray-100">
       <Head>
         <title>{client.appName}</title>
@@ -135,55 +133,51 @@ const Home: NextPage = () => {
         }}
       />
     </Card>
-
-      <button
-    className={classNames(
-      spaceGroteskClass !== undefined ? spaceGroteskClass : "",
-      "text-white rounded-xl px-5 py-2 m-5 text-xl font-bold hover:opacity-70 transition-all duration-300 disabled:opacity-50"
-    )}
-    style={{ background: client.appThemeColor }}
-    disabled={receiving}
-    onClick={start}
-  >
-    Start
-  </button>
-
-    {result !== undefined ? (
-      <Card
-        className="overflow-hidden break-words text-start w-full max-w-lg bg-blue-100/20"
-        style={{
-          minHeight: "9rem;",
-        }}
+    <button
+        className={classNames(
+          "text-white rounded-xl px-5 py-2 m-5 text-xl font-bold hover:opacity-70 transition-all duration-300 disabled:opacity-50"
+        )}
+        style={{ background: client.appThemeColor }}
+        disabled={receiving}
+        onClick={start}
       >
-        <pre className="p-4 whitespace-pre-wrap">{result}</pre>
-      </Card>
-    ) : undefined}
+        Start
+      </button>
 
-    <button onClick={logout}>Logout</button>
-  </main>
+      {result !== undefined ? (
+        <Card
+          className="overflow-hidden break-words text-start w-full max-w-lg bg-blue-100/20"
+          style={{
+            minHeight: "9rem;",
+          }}
+        >
+          <pre className="p-4 whitespace-pre-wrap">{result}</pre>
+        </Card>
+      ) : undefined}
 
-  <footer className="flex h-24 w-full items-center justify-center">
-      <button
-      className={classNames(
-        spaceGroteskClass !== undefined ? spaceGroteskClass : "",
-        "mt-5 mr-5 text-white rounded-xl px-5 py-2 text-xl font-bold hover:opacity-70 transition-all duration-300"
-      )}
-      style={{ background: client.appThemeColor }}
-      onClick={() => window.open('https://www.buymeacoffee.com/zenchant', '_blank')}
-    >
-      Buy me a 🥑?
-    </button>
+      <button onClick={logout}>Logout</button>
+    </main>
 
-    <div className="mt-5 mr-5 text-xs bg-black bg-opacity-50 text-white p-2 rounded">
-      🥑  🥑  If you find yourself learning, consider supporting me or checking out my art! 🥑  🥑
-    </div>
-  </footer>
-</div>
+    <footer className="flex h-24 w-full items-center justify-center">
+      <a
+        className={classNames(
+          "mt-5 mr-5 text-white rounded-xl px-5 py-2 text-xl font-bold hover:opacity-70 transition-all duration-300"
+        )}
+        style={{ background: client.appThemeColor }}
+        href='https://www.buymeacoffee.com/zenchant'
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Buy me a 🥑?
+      </a>
+
+      <div className="mt-5 mr-5 text-xs bg-black bg-opacity-50 text-white p-2 rounded">
+        🥑  🥑  If you find yourself learning, consider supporting me or checking out my art! 🥑  🥑
+      </div>
+    </footer>
+  </div>
 );
 };
 
 export default Home;
 
-function spaceGrotesk(arg0: { subsets: string[]; variable: string; }) {
-  throw new Error("Function not implemented.");
-}

@@ -7,12 +7,12 @@
       background-color: black;
     }
   }
-  @font-face {
-    font-family: 'Space Grotesk';
-    src: url('https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+/* CSS Example */
+    @font-face {
+      font-family: space-grotesk;
+      src: url(./fonts/SpaceGrotesk-Regular.woff2);
+      font-weight: 400;
+    }
 
   .spaceGroteskClass {
     font-family: 'Space Grotesk', sans-serif;
