@@ -31,7 +31,10 @@ export async function OpenAIStream(payload: object) {
       function onParse(event: ParsedEvent | ReconnectInterval) {
         if (event.type === "event") {
           const data = event.data;
-
+      
+          // Log the data
+          console.log(data);
+      
           if (data === "[DONE]") {
             controller.close();
             return;
@@ -39,7 +42,7 @@ export async function OpenAIStream(payload: object) {
           try {
             const json = JSON.parse(data);
             const text = json.choices[0]?.delta?.content ?? "";
-
+      
             if (counter < 2 && (text.match(/\n/) || []).length) {
               return;
             }
@@ -47,6 +50,8 @@ export async function OpenAIStream(payload: object) {
             controller.enqueue(queue);
             counter++;
           } catch (e) {
+            // Log the error
+            console.error(e);
             controller.error(e);
           }
         }
