@@ -10,7 +10,7 @@
 /* CSS Example */
     @font-face {
       font-family: space-grotesk;
-      src: url(./fonts/SpaceGrotesk-Regular.woff2);
+      src: url(.\fonts\SpaceGrotesk.woff2);
       font-weight: 400;
     }
 
